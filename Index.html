@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Dictionary - พจนานุกรมกฎหมาย</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a3a5f; /* สีน้ำเงินกรมท่า ดูน่าเชื่อถือ */
+            --accent-color: #e74c3c;
+            --bg-color: #f4f7f9;
+        }
+        body { font-family: 'Sarabun', sans-serif; padding: 20px; background-color: var(--bg-color); color: #333; line-height: 1.6; }
+        .container { max-width: 700px; margin: auto; }
+        h1 { color: var(--primary-color); text-align: center; margin-bottom: 10px; font-weight: 700; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 0.9em; }
+        
+        /* Search Box */
+        .search-box { position: sticky; top: 10px; background: var(--bg-color); padding: 15px 0; z-index: 100; }
+        #search { width: 100%; padding: 15px 25px; border: 2px solid var(--primary-color); border-radius: 50px; font-size: 18px; outline: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); box-sizing: border-box; }
+        
+        /* Card Style */
+        #results { margin-top: 20px; }
+        .card { background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 5px solid var(--primary-color); }
+        .word-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; border-bottom: 1px dashed #eee; pb: 10px; }
+        .word { color: var(--accent-color); font-size: 24px; font-weight: bold; }
+        .meaning { color: var(--primary-color); font-size: 18px; font-weight: bold; text-align: right; }
+        .definition { background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 15px; color: #444; }
+        
+        /* Law Systems Section */
+        .law-systems { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .law-box { font-size: 12px; padding: 8px; border-radius: 5px; background: #eef2f7; }
+        .law-label { font-weight: bold; color: var(--primary-color); display: block; margin-bottom: 3px; }
+        
+        .refer { font-size: 11px; color: #999; margin-top: 15px; font-style: italic; text-align: right; border-top: 1px solid #f0f0f0; pt: 5px; }
+        .no-result { text-align: center; color: #888; margin-top: 50px; }
+        mark { background: yellow; color: black; padding: 0 2px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🏛️ Legal Dictionary</h1>
+    <div class="subtitle">พจนานุกรมภาษาอังกฤษสำหรับนักกฎหมาย</div>
+    
+    <div class="search-box">
+        <input type="text" id="search" placeholder="ค้นหาคำศัพท์ หรือความหมาย..." onkeyup="search()" autocomplete="off">
+    </div>
+    
+    <div id="results"></div>
+</div>
+
+<script>
+// ข้อมูลชุดใหม่จากไฟล์ของคุณ
+const dictionaryData = [
+    { word: "Ab absurdo", meaning: "ไม่มีมูล", define: "จากความไร้สาระ หรือจากสิ่งที่เป็นไปไม่ได้", keyword: "absrudo", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar" },
+    { word: "Ab initio", meaning: "ตั้งแต่ต้น", define: "ตั้งแต่เริ่มต้น", keyword: "ab intio", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar" },
+    { word: "A priori", meaning: "เรื่องก่อหน้า", define: "ความก่อนหน้า", keyword: "A pirori", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar" },
+    { word: "certiorary", meaning: "คำสั่งศาลฏีกา", define: "คำสั่งของศาลฎีกา", keyword: "certiorrary", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar" },
+    { word: "Bind", meaning: "ผูกมัด", define: "ผูกมัดตามเจตนา", keyword: "blind", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar" },
+    { word: "Obligate", meaning: "ผูกพัน", define: "ก่อให้เกิดพันธะที่ต้องปฏิบัติตาม", keyword: "obligation", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar, พจนานุกรมราชบัณฑิตยสถาน\"ผูกพัน\"" },
+    { word: "Breaking", meaning: "บุรุก", define: "ฝ่า,บุกรุก,ทำลาย", keyword: "bareking", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar" },
+    { word: "Entering", meaning: "เข้าไป", define: "เข้าไป;เข้าร่วม", keyword: "entring", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar" },
+    { word: "Butts", meaning: "แนวเขต", define: "ระวางเขต", keyword: "butt", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar" },
+    { word: "Bounds", meaning: "ขอบเขต", define: "กรอบ,อาณาเขต,ข้อจำกัด,ขอบข่าย", keyword: "bounds", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar, พจนานุกรมราชบัณฑิตยสถาน\"ขอบเขต\"" },
+    { word: "by and between", meaning: "โดย ระหว่าง", define: "โดยระหว่าง (มักปรากฎในสัญญา)", keyword: "by between", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar" },
+    { word: "Cease", meaning: "หยุด", define: "ระงับ", keyword: "caeses", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar" },
+    { word: "Attention", meaning: "ความใส่ใจ", define: "ให้ความสำคัญ", keyword: "attention", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar, พจนานุกรมราชบัณฑิตยสถาน" },
+    { word: "Desist", meaning: "ระงับ", define: "ทำให้สงบ , ยับยั้งไว้", keyword: "densist", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar, พจนานุกรมราชบัณฑิตยสถาน\"ระงับ\"" },
+    { word: "Covenant", meaning: "ให้คำมั่น", define: "แสดงเจตนาให้กับบุคคลหนึ่งเป็นการเฉพาะหรือโดยทั่วไป ว่าจะกระทำการอย่างหนึ่งอย่างใด", keyword: "covernant", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar, พจนานุกรมราชบัณฑิตยสถาน\"คำมั่น\"" },
+    { word: "Agree", meaning: "ตกลง", define: "ยินยอม,เห็นด้วย", keyword: "agree", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar" },
+    { word: "Deem", meaning: "ถือว่า", define: "ยอมรับว่า, ข้อสันนิษฐานเด็ดขาดที่พิสูจน์เป็นอย่างอื่นไม่ได้", keyword: "deam", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar, พจนานุกรมราชบัณฑิตยสถาน\"ถือว่า\"" },
+    { word: "Consider", meaning: "พิจารณา", define: "ตรวจตรามตริตรอง, ใคร่ครวญ", keyword: "consider", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar, พจนานุกรมราชบัณฑิตยสถาน\"พิจารณา\"" }
+];
+
+const resultsDiv = document.getElementById('results');
+
+function displayData(data) {
+    resultsDiv.innerHTML = '';
+    if (data.length === 0) {
+        resultsDiv.innerHTML = '<div class="no-result">ไม่พบข้อมูลที่ค้นหา...</div>';
+        return;
+    }
+
+    data.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+            <div class="word-header">
+                <div class="word">${item.word}</div>
+                <div class="meaning">${item.meaning}</div>
+            </div>
+            <div class="definition">${item.define}</div>
+            <div class="law-systems">
+                <div class="law-box"><span class="law-label">Common Law</span>${item.common}</div>
+                <div class="law-box"><span class="law-label">Civil Law</span>${item.civil}</div>
+            </div>
+            <div class="refer">อ้างอิง: ${item.refer}</div>
+        `;
+        resultsDiv.appendChild(div);
+    });
+}
+
+function search() {
+    const query = document.getElementById('search').value.toLowerCase().trim();
+    if (query === "") {
+        resultsDiv.innerHTML = '';
+        return;
+    }
+
+    const filteredData = dictionaryData.filter(item => {
+        return item.word.toLowerCase().includes(query) || 
+               item.meaning.toLowerCase().includes(query) || 
+               item.keyword.toLowerCase().includes(query);
+    });
+    
+    displayData(filteredData);
+}
+</script>
+
+</body>
+</html>
