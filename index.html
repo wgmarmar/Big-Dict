@@ -52,6 +52,42 @@
 </div>
 
 <script>
+    // เช็คว่าเคยตอบตกลงไปหรือยังเมื่อเปิดหน้าเว็บ
+window.onload = function() {
+    const consent = localStorage.getItem('cookie_consent');
+    if (!consent) {
+        document.getElementById('cookie-banner').style.display = 'block';
+    }
+};
+
+function acceptCookies() {
+    localStorage.setItem('cookie_consent', 'accepted');
+    document.getElementById('cookie-banner').style.display = 'none';
+}
+
+function declineCookies() {
+    localStorage.setItem('cookie_consent', 'declined');
+    document.getElementById('cookie-banner').style.display = 'none';
+}
+    async function trackSearch(query, isFound) {
+    // 🔥 เพิ่มบรรทัดนี้เข้าไป: ถ้าไม่ได้กด 'accepted' ให้เลิกทำงานทันที
+    const consent = localStorage.getItem('cookie_consent');
+    if (consent !== 'accepted') {
+        return; 
+    }
+
+    try {
+        await fetch('/api/log', {
+            method: 'POST',
+            body: JSON.stringify({
+                word: query,
+                found: isFound
+            })
+        });
+    } catch (err) {
+        console.log("Tracking skipped.");
+    }
+}
 // ข้อมูลชุดใหม่จากไฟล์ของคุณ
 const dictionaryData = [
     { word: "Ab absurdo", meaning: "ไม่มีมูล", define: "จากความไร้สาระ หรือจากสิ่งที่เป็นไปไม่ได้", keyword: "absrudo", common: "coming soon", civil: "coming soon", refer: "Book.Legalese to pass the bar" },
@@ -139,7 +175,17 @@ function search() {
     trackSearch(query, filtered.length > 0);
 }
 </script>
-
+    
+<div id="cookie-banner" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #2d3436; color: white; padding: 20px; text-align: center; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);">
+    <p style="margin: 0 0 10px 0; font-family: 'Sarabun', sans-serif;">
+        เว็บไซต์นี้มีการเก็บข้อมูลการค้นหาและข้อมูลทางเทคนิคเพื่อปรับปรุงการใช้งาน 
+        โดยไม่มีการระบุตัวตนของคุณ คุณยอมรับให้เราเก็บข้อมูลนี้หรือไม่?
+    </p>
+    <button onclick="acceptCookies()" style="background: #00b894; color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px; font-weight: bold;">ยอมรับ</button>
+    <button onclick="declineCookies()" style="background: #636e72; color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer;">ไม่ยอมรับ</button>
+</div>
+    
 </body>
 
 </html>
+
