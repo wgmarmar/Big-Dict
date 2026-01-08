@@ -6,13 +6,14 @@ async function loadData() {
     try {
         const res = await fetch('/api/get-dictionary');
         dictionaryData = await res.json();
-        console.log("✅ ข้อมูลจาก DB โหลดแล้ว:", dictionaryData); // ดูข้อมูลใน Console
+        // ตรวจสอบใน Console ว่าข้อมูลที่มาถึงหน้าบ้าน หน้าตาเป็นอย่างไร
+        console.log("✅ ข้อมูลที่ดึงมาจาก MongoDB:", dictionaryData);
     } catch (err) {
-        console.error("❌ โหลดข้อมูลล้มเหลว:", err);
+        console.error("❌ ดึงข้อมูลไม่สำเร็จ:", err);
     }
 }
 
-// 2. ฟังก์ชันค้นหา (ปรับให้ตรงกับหัวตาราง term, meaning, keyword, tag)
+// 2. ฟังก์ชันค้นหา (เปลี่ยนกลับมาใช้ item.word)
 function search() {
     const query = document.getElementById('search').value.toLowerCase().trim();
     if (!query) { 
@@ -21,23 +22,21 @@ function search() {
     }
 
     const filtered = dictionaryData.filter(item => {
-        // เช็คเผื่อกรณีบางช่องเป็นค่าว่าง (null/undefined)
-        const term = (item.term || "").toLowerCase();
-        const meaning = (item.meaning || "").toLowerCase();
-        const keyword = (item.keyword || "").toLowerCase();
-        const tag = (item.tag || "").toLowerCase();
+        // ดึงค่าจาก Object โดยใช้ชื่อ 'word' ตามใน Database
+        const wordText = (item.word || "").toLowerCase();
+        const meaningText = (item.meaning || "").toLowerCase();
+        const keywordText = (item.keyword || "").toLowerCase();
 
-        return term.includes(query) || 
-               meaning.includes(query) || 
-               keyword.includes(query) || 
-               tag.includes(query);
+        return wordText.includes(query) || 
+               meaningText.includes(query) || 
+               keywordText.includes(query);
     });
     
     renderResults(filtered);
     trackSearch(query, filtered.length > 0);
 }
 
-// 3. แสดงผล (ใช้ชื่อ field ให้ตรงกับใน MongoDB)
+// 3. แสดงผล (เปลี่ยนกลับมาใช้ item.word)
 function renderResults(data) {
     resultsDiv.innerHTML = data.length === 0 ? '<div class="no-result">ไม่พบข้อมูล...</div>' : '';
     
@@ -46,18 +45,14 @@ function renderResults(data) {
         div.className = 'card';
         div.innerHTML = `
             <div class="word-header">
-                <div class="word">${item.term || "ไม่ระบุคำศัพท์"}</div>
+                <div class="word">${item.word || "ไม่มีชื่อคำศัพท์"}</div>
                 <div class="meaning">${item.meaning || ""}</div>
             </div>
-            <div class="definition">${item.define || "ไม่มีคำอธิบาย"}</div>
+            <div class="definition">${item.define || ""}</div>
             <div class="law-systems">
                 <div class="law-box">
-                    <span class="law-label">Tag / หมวดหมู่</span>
-                    ${item.tag || '-'}
-                </div>
-                <div class="law-box">
-                    <span class="law-label">Note</span>
-                    ${item.note || '-'}
+                    <span class="law-label">Common Law / Civil Law</span>
+                    ${item.common || '-'} / ${item.civil || '-'}
                 </div>
             </div>
             <div class="refer">อ้างอิง: ${item.refer || 'ไม่ระบุ'}</div>
@@ -78,5 +73,4 @@ async function trackSearch(query, isFound) {
     } catch (e) {}
 }
 
-// เริ่มโหลดข้อมูลทันทีที่ไฟล์นี้ถูกเรียก
 loadData();
