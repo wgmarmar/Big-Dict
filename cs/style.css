@@ -1,0 +1,76 @@
+:root {
+    --primary-color: #1a3a5f;
+    --accent-color: #e74c3c;
+    --bg-color: #f4f7f9;
+    --white: #ffffff;
+}
+
+body { 
+    font-family: 'Sarabun', sans-serif; 
+    padding: 20px; 
+    background-color: var(--bg-color); 
+    color: #333; 
+    line-height: 1.6; 
+    margin: 0; 
+}
+
+.container { 
+    max-width: 700px; 
+    margin: auto; 
+    padding-bottom: 100px; 
+}
+
+h1 { color: var(--primary-color); text-align: center; margin-bottom: 10px; font-weight: 700; }
+
+.subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 0.9em; }
+
+/* Search Box */
+.search-box { position: sticky; top: 10px; background: var(--bg-color); padding: 15px 0; z-index: 100; }
+
+#search { 
+    width: 100%; padding: 15px 25px; border: 2px solid var(--primary-color); 
+    border-radius: 50px; font-size: 18px; outline: none; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); box-sizing: border-box; 
+}
+
+/* Dictionary Card */
+.card { 
+    background: var(--white); padding: 25px; border-radius: 15px; 
+    margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+    border-top: 5px solid var(--primary-color); 
+}
+
+.word-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; border-bottom: 1px dashed #eee; padding-bottom: 10px; }
+
+.word { color: var(--accent-color); font-size: 24px; font-weight: bold; }
+
+.meaning { color: var(--primary-color); font-size: 18px; font-weight: bold; text-align: right; }
+
+.definition { background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 15px; color: #444; }
+
+.law-systems { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+
+.law-box { font-size: 12px; padding: 8px; border-radius: 5px; background: #eef2f7; }
+
+.law-label { font-weight: bold; color: var(--primary-color); display: block; margin-bottom: 3px; }
+
+.refer { font-size: 11px; color: #999; margin-top: 15px; font-style: italic; text-align: right; border-top: 1px solid #f0f0f0; padding-top: 5px; }
+
+.no-result { text-align: center; color: #888; margin-top: 50px; }
+
+/* Cookie Banner Style */
+#cookie-banner {
+    position: fixed; bottom: 0; left: 0; width: 100%; 
+    background: #2d3436; color: white; padding: 20px; 
+    text-align: center; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    box-sizing: border-box;
+}
+
+.cookie-btn {
+    border: none; padding: 8px 20px; border-radius: 5px; 
+    cursor: pointer; font-weight: bold; margin: 5px;
+}
+
+.btn-accept { background: #00b894; color: white; }
+
+.btn-decline { background: #636e72; color: white; }
