@@ -6,67 +6,86 @@ async function loadData() {
     try {
         const res = await fetch('/api/get-dictionary');
         dictionaryData = await res.json();
-        // 🔥 เพิ่มบรรทัดนี้: ให้แสดงข้อมูลทั้งหมดทันทีที่โหลดเสร็จ
+        // แสดงข้อมูลทั้งหมดทันทีที่โหลดเสร็จ
         renderResults(dictionaryData); 
     } catch (err) {
         console.error("Load Error:", err);
     }
 }
 
+// 2. ฟังก์ชันค้นหา (Search)
 function search() {
     const query = document.getElementById('search').value.toLowerCase().trim();
-    if (!query) { 
-        resultsDiv.innerHTML = ''; 
-        return; 
+    const resultsDiv = document.getElementById('results');
+    
+    if (!query) {
+        renderResults(dictionaryData); // ถ้าช่องว่าง ให้โชว์ทั้งหมด
+        return;
     }
 
-    const filtered = dictionaryData.filter(item => {
-        // ดึงค่าจากฟิลด์ต่างๆ มาทำเป็นตัวเล็กให้หมด
-        const wordText = (item.word || "").toLowerCase();
-        const meaningText = (item.meaning || "").toLowerCase();
-        const keywordText = (item.keyword || "").toLowerCase();
-        const tagText = (item.tag || "").toLowerCase(); // ✅ เพิ่มการดึง Tag มาเช็ค
+    const cleanQuery = query.replace('#', ''); 
 
-        // ค้นหาว่าคำที่พิมพ์ (query) มีอยู่ในฟิลด์ไหนบ้าง
-        return wordText.includes(query) || 
-               meaningText.includes(query) || 
-               keywordText.includes(query) || 
-               tagText.includes(query); // ✅ ถ้าพิมพ์ #latin แล้วใน tag มีคำนี้ ก็จะเจอทันที
+    const filtered = dictionaryData.filter(item => {
+        // ดึงค่ามาให้ครบทุก Field เพื่อใช้ค้นหา
+        const word = (item.word || "").toLowerCase();
+        const meaning = (item.meaning || "").toLowerCase();
+        const define = (item.define || "").toLowerCase();
+        const pos = (item.pos || "").toLowerCase();
+        const note = (item.note || "").toLowerCase();
+        const refer = (item.refer || "").toLowerCase(); // ✅ เพิ่ม refer ตรงนี้
+        const tag = (item.tag || "").toLowerCase();
+        const keyword = (item.keyword || "").toLowerCase();
+        const misspelled = (item.misspelled || "").toLowerCase();
+        const related = (item.related || "").toLowerCase();
+
+        // คืนค่า true ถ้าเจอ cleanQuery ในช่องใดช่องหนึ่ง
+        return word.includes(cleanQuery) || 
+               meaning.includes(cleanQuery) || 
+               define.includes(cleanQuery) ||
+               pos.includes(cleanQuery) ||
+               note.includes(cleanQuery) ||
+               refer.includes(cleanQuery) || // ✅ เช็ค refer ด้วย
+               tag.includes(cleanQuery) || 
+               keyword.includes(cleanQuery) ||
+               misspelled.includes(cleanQuery) ||
+               related.includes(cleanQuery);
     });
     
     renderResults(filtered);
-    trackSearch(query, filtered.length > 0);
+    
+    // บันทึกสถิติ (ถ้ามีฟังก์ชัน trackSearch)
+    if (typeof trackSearch === "function") {
+        trackSearch(query, filtered.length > 0);
+    }
 }
 
+// 3. ฟังก์ชันแสดงผล (Render)
 function renderResults(data) {
-    resultsDiv.innerHTML = data.length === 0 ? '<div class="no-result">ไม่พบข้อมูล...</div>' : '';
+    resultsDiv.innerHTML = data.length === 0 ? '<div class="no-result">ไม่พบข้อมูล</div>' : '';
     
     data.forEach(item => {
         const div = document.createElement('div');
         div.className = 'card';
         
-        // สร้าง HTML สำหรับ Tag (ถ้ามี)
-        const tagHTML = item.tag ? `<span style="background: #e1f5fe; color: #039be5; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 5px; vertical-align: middle;">${item.tag}</span>` : '';
-
         div.innerHTML = `
             <div class="word-header">
-                <div class="word">${item.word || "ไม่มีชื่อคำศัพท์"} ${tagHTML}</div>
-                <div class="meaning">${item.meaning || ""}</div>
-            </div>
-            <div class="definition">${item.define || ""}</div>
-            <div class="law-systems">
-                <div class="law-box">
-                    <span class="law-label">Common / Civil</span>
-                    ${item.common || '-'} / ${item.civil || '-'}
+                <div class="word-group">
+                    <span class="word">${item.word || ''}</span>
+                    <span class="pos">${item.pos || ''}</span>
                 </div>
+                <div class="meaning">${item.meaning || ''}</div>
             </div>
-            <div class="refer">อ้างอิง: ${item.refer || '-'}</div>
+            
+            <div class="definition">${item.define || ''}</div>
+            
+            ${item.note ? `<div class="note"><strong>Note:</strong> ${item.note}</div>` : ''}
+            
+            ${item.refer ? `<div class="refer" style="font-size: 0.85em; color: #888; margin-top: 12px; border-top: 1px solid #eee; padding-top: 8px;">อ้างอิง: ${item.refer}</div>` : ''}
         `;
         resultsDiv.appendChild(div);
     });
 }
-
-// 4. บันทึกสถิติ
+// 4. บันทึกสถิติการค้นหา
 async function trackSearch(query, isFound) {
     if (localStorage.getItem('cookie_consent') !== 'accepted') return;
     try {
@@ -78,8 +97,7 @@ async function trackSearch(query, isFound) {
     } catch (e) {}
 }
 
-loadData();
-
+// 5. ระบบส่ง Feedback
 async function sendFeedback() {
     const text = document.getElementById('feedback-text').value.trim();
     const btn = document.getElementById('submit-btn');
@@ -112,3 +130,6 @@ async function sendFeedback() {
         btn.innerText = "ส่งข้อความ";
     }
 }
+
+// เริ่มโหลดข้อมูล
+loadData();
