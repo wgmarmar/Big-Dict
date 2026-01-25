@@ -5,10 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Legal Dictionary - พจนานุกรมกฎหมาย</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<div id="cookie-banner" style="display: none;">
+    <div class="cookie-content">
+        <h2>ยินยอมการใช้งานคุ้กกี้ 🍪</h2>
+        <p>เพื่อประสบการณ์การใช้งานที่ดีและถูกต้องตามนโยบายคุ้มครองข้อมูลส่วนบุคคล คุณจำเป็นต้องยินยอมการใช้คุ้กกี้ก่อนเข้าใช้งานระบบฐานข้อมูลคำศัพท์กฎหมาย</p>
+        <div class="cookie-buttons">
+            <button onclick="acceptCookie()" class="btn-accept">ยอมรับและใช้งาน</button>
+            <button onclick="declineCookie()" class="btn-decline">ปฏิเสธ</button>
+        </div>
+    </div>
+</div>
 
 <div class="container">
     <h1>🏛️ Legal Dictionary</h1>
@@ -19,15 +29,17 @@
     </div>
     
     <div id="results"></div>
+
     <hr style="margin-top: 40px; border: 0.5px solid #eee;">
-<div class="feedback-section">
-    <h3>📢 แจ้งปัญหาหรือแนะนำคำศัพท์</h3>
-    <textarea id="feedback-text" placeholder="พิมพ์ข้อความที่นี่... (เช่น หาคำว่า...ไม่เจอ, ข้อมูลผิดพลาด)" rows="3"></textarea>
-    <button onclick="sendFeedback()" id="submit-btn">ส่งข้อความ</button>
-    <p id="feedback-msg" style="display:none; font-size: 12px; color: green; margin-top: 10px;">ขอบคุณสำหรับข้อเสนอแนะครับ! 🙏</p>
+    
+    <div class="feedback-section">
+        <h3>📢 แจ้งปัญหาหรือแนะนำคำศัพท์</h3>
+        <textarea id="feedback-text" placeholder="พิมพ์ข้อความที่นี่... (เช่น หาคำว่า...ไม่เจอ, ข้อมูลผิดพลาด)" rows="3"></textarea>
+        <button onclick="sendFeedback()" id="submit-btn">ส่งข้อความ</button>
+        <p id="feedback-msg" style="display:none; font-size: 12px; color: green; margin-top: 10px;">ขอบคุณสำหรับข้อเสนอแนะครับ! 🙏</p>
+    </div>
 </div>
 
-<script src="js/cookie-consent.js"></script>
 <script src="js/dictionary.js"></script>
 
 </body>
