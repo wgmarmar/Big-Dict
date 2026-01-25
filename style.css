@@ -58,19 +58,36 @@ h1 { color: var(--primary-color); text-align: center; margin-bottom: 10px; font-
 
 .no-result { text-align: center; color: #888; margin-top: 50px; }
 
-/* Cookie Banner Style */
+/* คุ้กกี้แบนเนอร์แบบ Hard Gate */
 #cookie-banner {
-    position: fixed; bottom: 0; left: 0; width: 100%; 
-    background: #2d3436; color: white; padding: 20px; 
-    text-align: center; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
-    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85); /* ฉากหลังดำโปร่งแสง บังเนื้อหาเว็บ */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* อยู่หน้าสุดเสมอ */
+    backdrop-filter: blur(5px); /* เบลอเนื้อหาหลังแบนเนอร์ */
 }
 
-.cookie-btn {
-    border: none; padding: 8px 20px; border-radius: 5px; 
-    cursor: pointer; font-weight: bold; margin: 5px;
+.cookie-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
 
-.btn-accept { background: #00b894; color: white; }
+.cookie-content h2 {
+    margin-top: 0;
+    color: #333;
+}
 
-.btn-decline { background: #636e72; color: white; }
+.cookie-content p {
+    color: #666;
+    margin-bottom: 20px;
+}
