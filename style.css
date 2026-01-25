@@ -58,36 +58,82 @@ h1 { color: var(--primary-color); text-align: center; margin-bottom: 10px; font-
 
 .no-result { text-align: center; color: #888; margin-top: 50px; }
 
-/* คุ้กกี้แบนเนอร์แบบ Hard Gate */
+/* คุ้กกี้แบนเนอร์แบบ Hard Gate - ดีไซน์ใหม่ */
 #cookie-banner {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.85); /* ฉากหลังดำโปร่งแสง บังเนื้อหาเว็บ */
+    background: rgba(15, 23, 42, 0.9); /* สีน้ำเงินเข้มเกือบดำ */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999; /* อยู่หน้าสุดเสมอ */
-    backdrop-filter: blur(5px); /* เบลอเนื้อหาหลังแบนเนอร์ */
+    z-index: 9999;
+    backdrop-filter: blur(12px); /* เบลอหลังจอให้ดูพรีเมียม */
 }
 
 .cookie-content {
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    max-width: 400px;
+    background: rgba(30, 41, 59, 1); /* สี Slate เข้ม */
+    padding: 40px;
+    border-radius: 24px;
+    max-width: 450px;
     text-align: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
+/* ปรับสีข้อความเป็นสีขาว */
 .cookie-content h2 {
     margin-top: 0;
-    color: #333;
+    color: #ffffff;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
 }
 
 .cookie-content p {
-    color: #666;
-    margin-bottom: 20px;
+    color: #cbd5e1; /* สีขาวอมเทา อ่านสบายตา */
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+/* ดีไซน์ปุ่มใหม่ */
+.cookie-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-accept {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); /* สีเขียวไล่เฉด */
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+}
+
+.btn-accept:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+}
+
+.btn-decline {
+    background: rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-decline:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-color: #ef4444;
 }
