@@ -24,7 +24,6 @@ function search() {
     filtered.sort((a, b) => {
         function getScore(item) {
             const q = cleanQuery;
-            // ลำดับความสำคัญ: 1.word > 2.meaning > 3.misspelled > 4.keyword > 5.note > 6.tag > 7.refer > 8.related
             if ((item.word || "").toLowerCase().includes(q)) return 1;
             if ((item.meaning || "").toLowerCase().includes(q)) return 2;
             if ((item.misspelled || "").toLowerCase().includes(q)) return 3;
@@ -33,23 +32,23 @@ function search() {
             if ((item.tag || "").toLowerCase().includes(q)) return 6;
             if ((item.refer || "").toLowerCase().includes(q)) return 7;
             if ((item.related || "").toLowerCase().includes(q)) return 8;
-            return 99; // กรณีอื่นๆ
+            return 99;
         }
 
         const scoreA = getScore(a);
         const scoreB = getScore(b);
 
-        // ถ้าคะแนนความสำคัญเท่ากัน ให้เรียงตามความยาวคำศัพท์ (คำที่สั้นกว่า/ตรงกว่า ขึ้นก่อน)
         if (scoreA === scoreB) {
             return (a.word || "").length - (b.word || "").length;
         }
-
-        return scoreA - scoreB; // คะแนนน้อยกว่า (ลำดับสูงกว่า) จะขึ้นก่อน
+        return scoreA - scoreB;
     });
 
-    renderResults(filtered);
-}
+    // 3. 🔥 จำกัดผลลัพธ์ให้แสดงเพียง 10 อันดับแรก
+    const limitedResults = filtered.slice(0, 10);
 
+    renderResults(limitedResults);
+}
 // 2. ฟังก์ชันแสดงผล
 function renderResults(data) {
     const resultsDiv = document.getElementById('results');
