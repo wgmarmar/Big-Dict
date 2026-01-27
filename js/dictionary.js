@@ -155,4 +155,9 @@ async function sendFeedback() {
         document.getElementById('feedback-msg').style.display = 'block';
     } catch (e) { alert("เกิดข้อผิดพลาด"); }
 }
-};
+// 6. จุดเริ่มทำงาน (เรียกใช้ checkConsent หลังจากโหลดหน้าเสร็จ)
+
+window.onload = function() {
+
+    checkConsent();
+}; 
