@@ -1,6 +1,5 @@
 let dictionaryData = [];
-
-function search() {
+async function search() {
     const query = document.getElementById('search').value.toLowerCase().trim();
     const resultsDiv = document.getElementById('results');
     
@@ -8,6 +7,19 @@ function search() {
         resultsDiv.innerHTML = ''; 
         return;
     }
+
+    // --- ส่วนที่เพิ่มใหม่: ส่งคำค้นหาไปหลังบ้าน (MongoDB) ---
+    // หมายเหตุ: ใช้ fetch แบบไม่รอ (no await) เพื่อให้หน้าเว็บทำงานต่อได้ทันทีไม่สะดุด
+    fetch('/api/log-consent', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            type: 'search',           // ระบุว่าเป็นข้อมูลการค้นหา
+            keyword: query,           // คำที่ผู้ใช้พิมพ์
+            userAgent: navigator.userAgent
+        })
+    }).catch(err => console.log("Search log error:", err));
+    // --------------------------------------------------
 
     const cleanQuery = query.replace('#', '');
 
@@ -20,7 +32,7 @@ function search() {
         return searchableText.includes(cleanQuery);
     });
 
-    // 2. จัดลำดับตามกฎความสำคัญ (1-8)
+    // 2. จัดลำดับตามกฎความสำคัญ (1-8) [โค้ดเดิมของคุณ...]
     filtered.sort((a, b) => {
         function getScore(item) {
             const q = cleanQuery;
@@ -44,7 +56,7 @@ function search() {
         return scoreA - scoreB;
     });
 
-    // 3. 🔥 จำกัดผลลัพธ์ให้แสดงเพียง 5 อันดับแรกที่ตรงที่สุด
+    // 3. จำกัดผลลัพธ์ให้แสดงเพียง 5 อันดับแรก
     const limitedResults = filtered.slice(0, 5);
 
     renderResults(limitedResults);
