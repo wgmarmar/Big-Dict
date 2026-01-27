@@ -157,7 +157,7 @@ async function sendFeedback() {
 }
 // 6. จุดเริ่มทำงาน (เรียกใช้ checkConsent หลังจากโหลดหน้าเสร็จ)
 
-window.onload = function() {
-
-    checkConsent();
-}; 
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Web Ready: เริ่มทำงาน...");
+    checkConsent(); 
+});
